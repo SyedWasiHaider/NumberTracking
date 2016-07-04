@@ -31,7 +31,7 @@ namespace NumberTracker.iOS
 				UIKit.UIImage resizedImage = UIKit.UIImage.FromImage(context.ToImage(), 0, orientation);
 
 				// save the image as a jpeg
-				return resizedImage.AsPNG().ToArray();
+				return resizedImage.AsJPEG().ToArray();
 			}
 		}
 

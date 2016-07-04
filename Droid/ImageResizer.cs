@@ -18,7 +18,7 @@ namespace NumberTracker.Droid
 
 			using (MemoryStream ms = new MemoryStream())
 			{
-				resizedImage.Compress(Bitmap.CompressFormat.Png, 100, ms);
+				resizedImage.Compress(Bitmap.CompressFormat.Jpeg, 100, ms);
 				return ms.ToArray();
 			}
 		}

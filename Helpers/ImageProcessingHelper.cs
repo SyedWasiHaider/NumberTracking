@@ -23,23 +23,26 @@ namespace NumberTracker
 				}
 				var resizedImageBytes = DependencyService.Get<IImageResizer>().Resize(rawBytes, 400, 250);
 
-				StreamContent scontent = new StreamContent(new MemoryStream(resizedImageBytes));
-				scontent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+				using (MemoryStream temp = new MemoryStream(resizedImageBytes))
 				{
-					FileName = Path.GetFileName(mediaFile.Path),
-					Name = "image"
-				};
-				scontent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+					StreamContent scontent = new StreamContent(temp);
+					scontent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+					{
+						FileName = Path.GetFileName(mediaFile.Path),
+						Name = "image"
+					};
+					scontent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
 
-				var client = new HttpClient();
-				var multi = new MultipartFormDataContent();
-				multi.Add(scontent);
-				client.BaseAddress = new Uri("http://45.55.137.37:5000/");
-				var response = await client.PostAsync("api/photo", multi);
-				if (response.IsSuccessStatusCode)
-				{
-					var content = await response.Content.ReadAsStringAsync();
-					return content;
+					var client = new HttpClient();
+					var multi = new MultipartFormDataContent();
+					multi.Add(scontent);
+					client.BaseAddress = new Uri("http://45.55.137.37:5000/");
+					var response = await client.PostAsync("api/photo", multi);
+					if (response.IsSuccessStatusCode)
+					{
+						var content = await response.Content.ReadAsStringAsync();
+						return content;
+				}
 				}
 			}
 			catch (Exception e)

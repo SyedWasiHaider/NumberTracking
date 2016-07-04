@@ -8,7 +8,7 @@ namespace NumberTracker
 		{
 			InitializeComponent();
 
-			MainPage = new NumberTrackerPage();
+			MainPage = new MainPage();
 			
 		}
 

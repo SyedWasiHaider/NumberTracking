@@ -19,12 +19,12 @@ using Xamarin.Forms;
 
 namespace NumberTracker
 {
-	public class MainViewModel : BaseViewModel
+	public class NumberTrackerPageViewModel : BaseViewModel
 	{
 		IDocumentViewer docViewer;
 		public const string SHOW_DIALOG_MESSAGE = "showDialog";
 
-		public MainViewModel()
+		public NumberTrackerPageViewModel()
 		{
 			docViewer = DependencyService.Get<IDocumentViewer>();
 
@@ -43,6 +43,23 @@ namespace NumberTracker
 				AddTransaction();
 				NumberText = String.Empty;
 				ImagePath = String.Empty;
+			});
+
+			DeleteCommand = new Command((record) =>
+			{
+				var transaction = (TransactionViewModel)record;
+				var id = transaction.id;
+				using (var realm = Realm.GetInstance())
+				{
+					var myTransaction = realm.All<Transaction>().Where(elem => elem.transactionId == id).First();
+					// Delete an object with a transaction
+					using (var trans = realm.BeginWrite())
+					{
+						realm.Remove(myTransaction);
+						trans.Commit();
+					}
+				}
+				SetItems();
 			});
 
 			SaveCsvCommand = new Command(async ()=> await SaveAsCsvAsync());
@@ -84,7 +101,7 @@ namespace NumberTracker
 		{
 			if (String.IsNullOrEmpty(NumberText))
 			{
-				MessagingCenter.Send<MainViewModel, string>(this, SHOW_DIALOG_MESSAGE, "No Text");
+				MessagingCenter.Send<NumberTrackerPageViewModel, string>(this, SHOW_DIALOG_MESSAGE, "No Text");
 				return;
 			}
 
@@ -94,7 +111,7 @@ namespace NumberTracker
 				 string lol = NumberText;
 				if (realm.All<Transaction>().Where(record => record.transactionId == lol).Count() > 0)
 				{
-					MessagingCenter.Send<MainViewModel, string>(this, SHOW_DIALOG_MESSAGE, $"Transaction number {NumberText} already exists");
+					MessagingCenter.Send<NumberTrackerPageViewModel, string>(this, SHOW_DIALOG_MESSAGE, $"Transaction number {NumberText} already exists");
 				}
 				else {
 					realm.Write(() =>
@@ -118,7 +135,7 @@ namespace NumberTracker
 			NumberText = String.Empty;
 			ImagePath= mediaFile.Path;
 			var text = await ImageProcessingHelper.GetTextFromImage(mediaFile);
-			var regex = new Regex(@"\d{10}");
+			var regex = new Regex(@"\d{10,12}");
 			var match = regex.Match(text);
 			var numberStr = match.ToString();
 			NumberText = numberStr;
@@ -128,7 +145,7 @@ namespace NumberTracker
 		public Command PickPhotoCommand { get; set; }
 		public Command VerifyAddCommand { get; set; }
 		public Command SaveCsvCommand { get; set; }
-
+		public Command DeleteCommand { get; set; }
 
 		private string _imagePath = String.Empty;
 		public string ImagePath

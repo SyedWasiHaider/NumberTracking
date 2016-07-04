@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using NumberTracker.Helpers;
 using Plugin.Media;
 using Plugin.Media.Abstractions;
 using Realms;
@@ -17,14 +18,14 @@ namespace NumberTracker
 	public partial class NumberTrackerPage : ContentPage
 	{
 
-		MainViewModel viewModel;
+		NumberTrackerPageViewModel viewModel;
 		public NumberTrackerPage()
 		{
 			InitializeComponent();
-			viewModel = new MainViewModel();
+			viewModel = new NumberTrackerPageViewModel();
 			viewModel.SetItems();
 			BindingContext = viewModel;
-			MessagingCenter.Subscribe<MainViewModel, string>(this, MainViewModel.SHOW_DIALOG_MESSAGE, async (sender, msg) =>
+			MessagingCenter.Subscribe<NumberTrackerPageViewModel, string>(this, NumberTrackerPageViewModel.SHOW_DIALOG_MESSAGE, async (sender, msg) =>
 			{
 				await DisplayAlert("Error", msg, "Ok");
 			});
@@ -34,6 +35,19 @@ namespace NumberTracker
 			{
 				var takePhoto = "Camera";
 				var pickPhoto = "Photo Gallery";
+
+				if (Settings.EnableDefaultAction)
+				{
+					if (Settings.DefaultCameraSelection == Settings.CAMERA)
+					{
+						viewModel.TakePhotoCommand.Execute(null);
+					}
+					else {
+						viewModel.PickPhotoCommand.Execute(null);
+					}
+					return;
+				}
+
 				var optionSelected = await DisplayActionSheet("Choose Method", "Cancel", null, takePhoto, pickPhoto);
 				if (optionSelected == takePhoto)
 				{
@@ -48,6 +62,11 @@ namespace NumberTracker
 			imageNumber.GestureRecognizers.Add(tapGesture);
 		}
 
+		public void OnDelete(object sender, EventArgs e)
+		{
+			var mi = ((MenuItem)sender);
+			viewModel.DeleteCommand.Execute(mi.CommandParameter);
+		}
 
 	}
 }
