@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using NumberTracker.Helpers;
+using PCLStorage;
 using Realms;
 using Xamarin.Forms;
 
@@ -68,7 +71,28 @@ namespace NumberTracker
 				}
 			};
 
+			saveAsCsv.Clicked += async (sender, e) =>
+			{
+				await SaveAsCsvAsync();
+			};
+		}
 
+		public async Task SaveAsCsvAsync()
+		{
+			using (var realm = Realm.GetInstance())
+			{
+				var temp = realm.All<Transaction>().OrderByDescending(c => c.DateTimeAdded).ToList();
+				var csv = new StringBuilder();
+				foreach (var element in temp)
+				{
+					var stringFmt = "{0},{1}\n";
+					csv.Append(String.Format(stringFmt, element.transactionId, element.DateTimeAdded));
+				}
+				var fileName = $"transactions{DateTimeOffset.UtcNow.ToFileTime()}.csv";
+				var file = await FileSystem.Current.LocalStorage.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+				await file.WriteAllTextAsync(csv.ToString());
+				DependencyService.Get<IDocumentViewer>().ShowDocumentFile(file.Path, "text/csv");
+			}
 		}
 	}
 }

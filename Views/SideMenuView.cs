@@ -28,10 +28,13 @@ namespace NumberTracker
 
 			ListView = new ListView
 			{
+				BackgroundColor = ColorStyles.AccentColor,
+
 				ItemsSource = masterPageItems,
 				ItemTemplate = new DataTemplate(() =>
 				{
 					var imageCell = new ImageCell();
+					imageCell.TextColor = Color.White;
 					imageCell.SetBinding(TextCell.TextProperty, "Title");
 					imageCell.SetBinding(ImageCell.ImageSourceProperty, "IconSource");
 					return imageCell;
@@ -42,7 +45,7 @@ namespace NumberTracker
 
 			Padding = new Thickness(0, 40, 0, 0);
 			Title = "Menu";
-
+			BackgroundColor = BackgroundColor = ColorStyles.AccentColor;
 			Content = new StackLayout
 			{
 				VerticalOptions = LayoutOptions.FillAndExpand,

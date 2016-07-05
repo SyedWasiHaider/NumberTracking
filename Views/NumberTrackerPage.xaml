@@ -1,8 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ContentPage BackgroundColor="#009279" xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:NumberTracker" x:Class="NumberTracker.NumberTrackerPage">
-	<ContentPage.Padding>
-	        <OnPlatform x:TypeArguments="Thickness" iOS="0, 20, 0, 0" WinPhone="20,20,20,20" />
-	</ContentPage.Padding>
+<ContentPage BackgroundColor="{StaticResource PrimaryColor}" xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:NumberTracker" x:Class="NumberTracker.NumberTrackerPage">
 	<StackLayout>
 		<Image Aspect="AspectFit" Source="{Binding ImagePath}" BackgroundColor="Silver" x:Name="imageNumber" HeightRequest="200" HorizontalOptions="FillAndExpand"/>
 		<Entry HeightRequest="40" Margin="4" FontSize="30"  x:Name="numberEntry" Text="{Binding NumberText, Mode=TwoWay}"  Keyboard="Numeric" VerticalOptions="Center" HorizontalOptions="Fill" />
@@ -23,6 +20,5 @@
 				</DataTemplate>
 			</ListView.ItemTemplate>
 		</ListView>
-		<Button Margin="15" BackgroundColor="#E91E63" FontSize="24" TextColor="White" Command="{Binding SaveCsvCommand}" Text="Save as CSV" />
 	</StackLayout>
 </ContentPage>

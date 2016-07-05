@@ -21,13 +21,10 @@ namespace NumberTracker
 {
 	public class NumberTrackerPageViewModel : BaseViewModel
 	{
-		IDocumentViewer docViewer;
 		public const string SHOW_DIALOG_MESSAGE = "showDialog";
 
 		public NumberTrackerPageViewModel()
 		{
-			docViewer = DependencyService.Get<IDocumentViewer>();
-
 			TakePhotoCommand = new Command(async () =>
 			{
 				var photo = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions() { Name = "myimage" });
@@ -61,27 +58,9 @@ namespace NumberTracker
 				}
 				SetItems();
 			});
-
-			SaveCsvCommand = new Command(async ()=> await SaveAsCsvAsync());
 		}
 
-		public async Task SaveAsCsvAsync()
-		{
-			using (var realm = Realm.GetInstance())
-			{
-				var temp = realm.All<Transaction>().OrderByDescending(c => c.DateTimeAdded).ToList();
-				var csv = new StringBuilder();
-				foreach (var element in temp)
-				{
-					var stringFmt = "{0},{1}\n";
-					csv.Append(String.Format(stringFmt, element.transactionId, element.DateTimeAdded));
-				}
-				var fileName = $"transactions{DateTimeOffset.UtcNow.ToFileTime()}.csv";
-				var file = await FileSystem.Current.LocalStorage.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-				await file.WriteAllTextAsync(csv.ToString());
-				docViewer.ShowDocumentFile(file.Path, "text/csv");
-			}
-		}
+	
 
 		public void SetItems()
 		{
@@ -144,7 +123,6 @@ namespace NumberTracker
 		public Command TakePhotoCommand { get; set; }
 		public Command PickPhotoCommand { get; set; }
 		public Command VerifyAddCommand { get; set; }
-		public Command SaveCsvCommand { get; set; }
 		public Command DeleteCommand { get; set; }
 
 		private string _imagePath = String.Empty;

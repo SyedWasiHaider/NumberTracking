@@ -7,7 +7,7 @@ namespace NumberTracker
 		public App()
 		{
 			InitializeComponent();
-
+			StyleLoader.Load(typeof(ColorStyles));
 			MainPage = new MainPage();
 			
 		}

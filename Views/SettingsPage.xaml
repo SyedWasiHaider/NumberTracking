@@ -1,13 +1,26 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="NumberTracker.SettingsPage">
+	<ContentPage.Padding>
+	        <OnPlatform x:TypeArguments="Thickness" iOS="0, 20, 0, 0" WinPhone="20,20,20,20" />
+	</ContentPage.Padding>
+
 	<ContentPage.Content>
 		<StackLayout>
 
-		<Label Text="Enable Photo Button Action Default" />
-		<Switch x:Name="switchAction"/>
 
-		<Picker x:Name="picker"/>
-		<Button x:Name="nukeButton" Text="Reset App Settings" />
+		<StackLayout Margin="8" BackgroundColor="{StaticResource Gray}">
+		<Label Margin="8" Text="Default Settings" FontAttributes="Bold" FontSize="20" />
+		<StackLayout Orientation="Horizontal">
+			<Label VerticalOptions="Center" Margin="4" Text="Automatically select option for photo" />
+			<Switch VerticalOptions="Center" HorizontalOptions="EndAndExpand" Margin="4" x:Name="switchAction"/>
+		</StackLayout>
+		<Picker Margin="4" x:Name="picker"/>
+		</StackLayout>
+
+		<Button x:Name="saveAsCsv" Margin="15" BackgroundColor="{StaticResource Green}" FontSize="24" TextColor="White" Text="Save as CSV" />
+
+
+		<Button VerticalOptions="EndAndExpand" x:Name="nukeButton" Margin="15" BackgroundColor="Red" FontSize="24" TextColor="White" Text="Delete Everything" />
 
 		</StackLayout>
 	</ContentPage.Content>
